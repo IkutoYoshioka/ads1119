@@ -42,6 +42,14 @@ export async function login(
   return (await res.json()) as LoginResult;
 }
 
+export async function logout(): Promise<void> {
+  await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include", // Cookie を送るために必須
+  })
+}
+
+
 export async function fetchFacilities(): Promise<FacilityOption[]> {
   const res = await fetch(`${API_BASE_URL}/facilities`, {
     method: 'GET',

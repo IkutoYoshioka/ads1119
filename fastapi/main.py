@@ -2,7 +2,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import auth, facilities, password_reset
+from app.api.v1 import auth, facilities, password_reset
+from app.api.v1 import users
+from app.db.session import engine
+from app.db.base import Base
 
 app = FastAPI()
 
@@ -23,6 +26,13 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(facilities.router)
 app.include_router(password_reset.router)
+app.include_router(users.router, prefix="/api/v1")
+
+@app.on_event("startup")
+def on_startup():
+    # 開発用：起動時にテーブルを自動作成
+    Base.metadata.create_all(bind=engine)
+
 
 @app.get("/")
 async def root():
