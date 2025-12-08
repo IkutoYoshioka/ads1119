@@ -2,8 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import auth, facilities, password_reset
-from app.api.v1 import users
+from app.api.v1 import api_router
 from app.db.session import engine
 from app.db.base import Base
 
@@ -23,10 +22,7 @@ app.add_middleware(
     allow_headers=["*"],         # 必要なら絞ってもよい
 )
 
-app.include_router(auth.router)
-app.include_router(facilities.router)
-app.include_router(password_reset.router)
-app.include_router(users.router, prefix="/api/v1")
+app.include_router(api_router)
 
 @app.on_event("startup")
 def on_startup():

@@ -98,6 +98,24 @@ def login(
         redirectPath=redirect_path,
     )
 
+@router.post("/mfa/setup-init")
+def setup_mfa_init():
+    """
+    多要素認証セットアップ初期化処理。
+    フロント/account/mfaページから呼ばれる。
+    """
+    # TODO: 実装
+    pass
+
+@router.post("/mfa/setup-verify")
+def setup_mfa_verify():
+    """
+    多要素認証セットアップ検証処理。
+    フロント/account/mfaページから呼ばれる。
+    """
+    # TODO: 実装
+    pass
+
 
 @router.post("/logout")
 def logout(response: Response):
@@ -121,3 +139,23 @@ def logout(response: Response):
     )
 
     return {"detail": "Logged out"}
+
+
+
+@router.get("/me")
+def get_me():
+    """
+    現在ログイン中のユーザー情報を返す。
+    （実装時は Depends(get_current_user) などを利用）
+    """
+    # TODO: 実装
+    pass
+
+
+@router.post("/change-password")
+def change_password():
+    """
+    パスワード変更処理。
+    """
+    # TODO: 実装
+    pass
