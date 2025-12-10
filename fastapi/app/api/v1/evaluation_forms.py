@@ -1,21 +1,21 @@
 # app/api/v1/evaluation_forms.py
 from fastapi import APIRouter
 
-router = APIRouter(prefix="/evaluation-form-templates", tags=["evaluation-form-templates"])
+router = APIRouter(prefix="/evaluation-forms", tags=["evaluation-forms"])
 
 
 @router.get("")
 def list_evaluation_form_templates():
     """
     評価フォームテンプレート一覧を取得。
-    クエリ: category, grade, jobCode, year など。
+    クエリ: period, grade など。
     """
     # TODO: 実装
     pass
 
 
-@router.get("/{form_id}")
-def get_evaluation_form_template(form_id: int):
+@router.get("/{formId}")
+def get_evaluation_form_template(formId: str):
     """
     評価フォームテンプレート詳細を取得。
     セクション・設問構成を含む。
@@ -33,8 +33,8 @@ def create_evaluation_form_template():
     pass
 
 
-@router.put("/{form_id}")
-def update_evaluation_form_template(form_id: int):
+@router.patch("/{formId}")
+def update_evaluation_form_template(formId: str):
     """
     評価フォームテンプレートを更新。
     """
@@ -42,20 +42,11 @@ def update_evaluation_form_template(form_id: int):
     pass
 
 
-@router.delete("/{form_id}")
-def delete_evaluation_form_template(form_id: int):
+@router.delete("/{formId}")
+def delete_evaluation_form_template(formId: str):
     """
     評価フォームテンプレートを削除（または無効化）。
     """
     # TODO: 実装
     pass
 
-
-@router.get("/resolve")
-def resolve_evaluation_form_template():
-    """
-    category × grade × jobCode × year 等から、
-    適用すべき評価フォームテンプレートを解決する。
-    """
-    # TODO: 実装
-    pass

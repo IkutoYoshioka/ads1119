@@ -116,6 +116,15 @@ def setup_mfa_verify():
     # TODO: 実装
     pass
 
+@router.post("/mfa/verify-login")
+def verify_mfa_login():
+    """
+    多要素認証ログイン検証処理。
+    ログイン直後、多要素認証が有効な場合に呼ばれる。
+    """
+    # TODO: 実装
+    pass
+
 
 @router.post("/logout")
 def logout(response: Response):

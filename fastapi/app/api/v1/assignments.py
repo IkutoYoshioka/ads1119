@@ -14,11 +14,10 @@ def list_assignments():
     pass
 
 
-@router.get("/{assignment_id}")
-def get_assignment(assignment_id: int):
+@router.get("/{assignmentId}")
+def get_assignment(assignmentId: str):
     """
     特定の割り当て詳細を取得。
-    （必要に応じて使用）
     """
     # TODO: 実装
     pass
@@ -27,14 +26,14 @@ def get_assignment(assignment_id: int):
 @router.post("")
 def create_assignment():
     """
-    新しい割り当て（被考課者 + カテゴリ別評価者）を作成する。
+    新しい割り当てを作成する。
     """
     # TODO: 実装
     pass
 
 
-@router.put("/{assignment_id}")
-def update_assignment(assignment_id: int):
+@router.patch("/{assignmentId}")
+def update_assignment(assignmentId: str):
     """
     割り当ての編集（評価者変更・「実施しない」設定など）。
     """
@@ -42,20 +41,11 @@ def update_assignment(assignment_id: int):
     pass
 
 
-@router.delete("/{assignment_id}")
-def delete_assignment(assignment_id: int):
+@router.delete("/{assignmentId}")
+def delete_assignment(assignmentId: str):
     """
     割り当ての削除。
     実務上はソフトデリートでもよい。
-    """
-    # TODO: 実装
-    pass
-
-
-@router.get("/{assignment_id}/summary")
-def get_assignment_summary(assignment_id: int):
-    """
-    （オプション）被考課者単位で一次・二次・最終などの状況をまとめて返す。
     """
     # TODO: 実装
     pass

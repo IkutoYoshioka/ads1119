@@ -13,8 +13,8 @@ def list_notices():
     pass
 
 
-@router.get("/{notice_id}")
-def get_notice(notice_id: int):
+@router.get("/{noticeId}")
+def get_notice(noticeId: str):
     """
     お知らせ詳細を取得。
     """
@@ -31,8 +31,8 @@ def create_notice():
     pass
 
 
-@router.put("/{notice_id}")
-def update_notice(notice_id: int):
+@router.patch("/{noticeId}")
+def update_notice(noticeId: str):
     """
     お知らせを更新。
     """
@@ -40,10 +40,26 @@ def update_notice(notice_id: int):
     pass
 
 
-@router.delete("/{notice_id}")
-def delete_notice(notice_id: int):
+@router.delete("/{noticeId}")
+def delete_notice(noticeId: str):
     """
     お知らせを削除。
+    """
+    # TODO: 実装
+    pass
+
+@router.post("/{noticeId}/read")
+def mark_notice_as_read(noticeId: str):
+    """
+    お知らせを既読にする。
+    """
+    # TODO: 実装
+    pass
+
+@router.get("/unread-count")
+def get_unread_notice_count():
+    """
+    未読お知らせの件数を取得。
     """
     # TODO: 実装
     pass

@@ -4,8 +4,8 @@ from fastapi import APIRouter
 router = APIRouter(prefix="/facility-results", tags=["facility-results"])
 
 
-@router.get("/summary")
-def get_facility_results_summary():
+@router.get("/overview")
+def get_facility_results_overview():
     """
     施設別サマリー一覧（件数・平均スコアなど）を取得。
     """
@@ -13,10 +13,18 @@ def get_facility_results_summary():
     pass
 
 
-@router.get("/{facility_id}")
-def get_facility_result_detail(facility_id: int):
+@router.get("/{siteId}")
+def get_facility_result_detail(siteId: str):
     """
     特定施設の詳細集計（カテゴリ別・等級別など）を取得。
+    """
+    # TODO: 実装
+    pass
+
+@router.get("/{officeId}")
+def get_office_result_detail(officeId: str):
+    """
+    特定事業所の詳細集計（カテゴリ別・等級別など）を取得。
     """
     # TODO: 実装
     pass

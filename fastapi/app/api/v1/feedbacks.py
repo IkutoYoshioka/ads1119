@@ -7,25 +7,40 @@ router = APIRouter(prefix="/feedbacks", tags=["feedbacks"])
 @router.get("")
 def list_feedbacks():
     """
-    役員・施設長・考課者が閲覧可能な評価結果（assignment）の一覧。
+    面談票一覧を取得。
     """
     # TODO: 実装
     pass
 
 
-@router.get("/{assignment_id}")
-def get_feedback_detail(assignment_id: int):
+@router.get("/{feedbackId}")
+def get_feedback(feedbackId: str):
     """
-    1人分の詳細結果 + 面談票を取得。
+    面談票詳細を取得。
     """
     # TODO: 実装
     pass
 
-
-@router.put("/{assignment_id}/interview-sheet")
-def update_interview_sheet_by_interviewer(assignment_id: int):
+@router.patch("/{feedbackId}/self-sheet")
+def update_self_sheet(feedbackId: str):
     """
-    面談担当者が面談票にコメントや面談日時を記入する。
+    面談票の自己評価シートを更新。
+    """
+    # TODO: 実装
+    pass
+
+@router.patch("/{feedbackId}/manager-comment")
+def update_manager_comment(feedbackId: str):
+    """
+    面談者がコメントを更新。
+    """
+    # TODO: 実装
+    pass
+
+@router.patch("/{feedbackId}/acknowledge")
+def acknowledge_feedback(feedbackId: int):
+    """
+    被考課者が内容を確認しましたフラグを立てる。
     """
     # TODO: 実装
     pass

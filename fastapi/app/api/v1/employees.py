@@ -15,8 +15,8 @@ def list_employees():
     pass
 
 
-@router.get("/{employee_id}")
-def get_employee(employee_id: str):
+@router.get("/{employeeId}")
+def get_employee(employeeId: str):
     """
     特定の従業員情報を取得。
     """
@@ -34,8 +34,8 @@ def create_employee():
     pass
 
 
-@router.put("/{employee_id}")
-def update_employee(employee_id: str):
+@router.patch("/{employeeId}")
+def update_employee(employeeId: str):
     """
     従業員情報を更新する。
     -admin のみ許可（require_admin）
@@ -44,8 +44,8 @@ def update_employee(employee_id: str):
     pass
 
 
-@router.delete("/{employee_id}")
-def delete_employee(employee_id: str):
+@router.delete("/{employeeId}")
+def delete_employee(employeeId: str):
     """
     従業員を削除（または無効化）する。
     -admin のみ許可（require_admin）

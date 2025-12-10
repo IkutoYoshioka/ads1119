@@ -18,8 +18,8 @@ def list_password_reset_requests():
     pass
 
 
-@router.get("/{request_id}")
-def get_password_reset_request(request_id: int):
+@router.get("/{requestId}")
+def get_password_reset_request(requestId: str):
     """
     本部用: 特定のパスワードリセット申請の詳細を取得。
     """
@@ -27,11 +27,11 @@ def get_password_reset_request(request_id: int):
     pass
 
 
-@router.post("/{request_id}/complete")
-def complete_password_reset_request(request_id: int):
+@router.patch("/{requestId}")
+def update_password_reset_request(requestId: str):
     """
     本部用: パスワードリセット申請を処理済みにする。
-    （必要に応じて新パスワードの設定も行う）
+    （新パスワードの設定は/employeesリソース）
     """
     # TODO: 実装
     pass
