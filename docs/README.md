@@ -170,7 +170,6 @@ shemasではCamelModel（キャメル⇔スネーク変換）を必ず継承す�
         >   "employeeId":"int",
         >   "grade":"str",
         >   "isAdmin":"boolean",
-        >   "mfaEnabled":true, //必ずtrue
         >   "mustChangePasswordAtNextLogin":"boolean"
         >}
         >```

@@ -67,6 +67,9 @@ def resolve_login_ip_policy(db: Session, user: User) -> Optional[LoginIpPolicy]:
     stmt = select(LoginIpPolicy).where(LoginIpPolicy.is_default == True)  # noqa: E712
     policy = db.scalar(stmt)
     if policy:
+        if policy.for_admin_only and not user.is_admin:
+            # 管理者専用ポリシーが非管理者ユーザーに適用されることはない
+            return None
         return policy
 
     # 3. 見つからなければ None

@@ -1,13 +1,8 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import {
-  IconDashboard,
-  IconListDetails,
-  IconUsers,
-  IconReport,
-  IconDatabase,
-  IconFileDescription,
   IconSettings,
   IconHelp,
 } from "@tabler/icons-react"
@@ -26,97 +21,50 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-import { menu_items } from "@/lib/config/menu"
-import { get_role_from_grade, type Role } from "@/lib/utils/role"
+import { menu_items, menu_groups } from "@/lib/config/menu"
+import type { MeResponse } from "@/features/auth/types"
 
-// props で受け取るユーザー情報の型
-type SidebarUser = {
-  name: string
-  email: string
-  avatar?: string
-  grade: string
-  isAdmin: boolean          // ← ここを isAdmin に変更
-}
-
-// Sidebar 自体の props 型
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  user: SidebarUser
+  me: MeResponse
 }
 
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
-  const role: Role = get_role_from_grade(user.grade)
+export function AppSidebar({ me, ...props }: AppSidebarProps) {
+  const { roleKey, isAdmin, canEvaluateMenu } = me
 
-  // lib/config/menu.ts の menu_items から、ロール & 管理者権限で絞り込み
-  const visible_items = menu_items.filter((item) => {
-    if (!item.allowed_roles.includes(role)) return false
-    if (item.admin_only && !user.isAdmin) return false   // ← ここも isAdmin
+  const visible = menu_items.filter((item) => {
+    if (item.admin_only) return isAdmin
+    if (!item.allowed_roles.includes(roleKey)) return false
+    if (item.requires_evaluator && !canEvaluateMenu) return false
     return true
   })
 
-  // メインメニューと管理者メニューに分割
-  const main_items = visible_items.filter((item) => !item.admin_only)
-  const admin_items = visible_items.filter((item) => item.admin_only)
+  const main_items = visible.filter((i) => !i.admin_only)
+  const admin_items = visible.filter((i) => i.admin_only)
 
-  // 各 path に対してどのアイコンを使うか
-  const icon_for_path: Record<
-    string,
-    React.ComponentType<React.SVGProps<SVGSVGElement>>
-  > = {
-    "/dashboard": IconDashboard,
-    "/personal_lists": IconListDetails,
-    "/assignment": IconUsers,
-    "/feedbacks": IconFileDescription,
-    "/my_feedbacks": IconFileDescription,
-    "/facility_results": IconReport,
-    "/admin/analysis": IconReport,
-    "/admin/browse": IconDatabase,
-    "/admin/edit_db": IconListDetails,
-  }
+  const main_groups = (Object.entries(menu_groups) as Array<[any, any]>)
+    .filter(([key]) => key !== "admin") // 管理者は別枠維持
+    .map(([key, g]) => {
+      const items = main_items
+        .filter((i) => i.group === key)
+        .map((i) => ({ title: i.label, url: i.path, icon: i.icon }))
+      return { key, label: g.label, collapsible: g.collapsible, defaultOpen: g.defaultOpen, items }
+    })
+    .filter((g) => g.items.length > 0)
 
-  const default_icon = IconListDetails
-
-  // NavMain が期待する形に変換
-  const nav_main_items = main_items.map((item) => ({
-    title: item.label,
-    url: item.path,
-    icon: icon_for_path[item.path] ?? default_icon,
+  const admin_docs_items = admin_items.map((i) => ({
+    name: i.label,
+    url: i.path,
+    icon: i.icon,
   }))
-
-  // 管理者メニューは NavDocuments に渡す
-  const admin_docs_items = admin_items.map((item) => ({
-    name: item.label,
-    url: item.path,
-    icon: icon_for_path[item.path] ?? IconDatabase,
-  }))
-
-  // 下部のセカンダリメニュー
-  const nav_secondary_items = [
-    {
-      title: "設定",
-      url: "/account",
-      icon: IconSettings,
-    },
-    {
-      title: "ヘルプ",
-      url: "/help",
-      icon: IconHelp,
-    },
-  ]
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
+            <SidebarMenuButton asChild className="!p-1.5">
               <a href="/dashboard">
-                <IconListDetails className="!size-5" />
-                <span className="text-base font-semibold">
-                  人事考課システム
-                </span>
+                <span className="text-base font-semibold">人事考課システム</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -124,35 +72,35 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       </SidebarHeader>
 
       <SidebarContent>
-        {/* メインナビ（共通 + 評価機能） */}
-        <NavMain items={nav_main_items} />
+        <NavMain
+          groups={main_groups}
+        />
 
-        {/* 管理者メニュー（admin_only な項目がある場合のみ） */}
-        {admin_docs_items.length > 0 && (
-          <NavDocuments items={admin_docs_items} />
+        {admin_items.length > 0 && (
+          <NavDocuments
+            items={admin_docs_items}
+          />
         )}
 
-        {/* 下部のセカンダリメニュー */}
-        <NavSecondary items={nav_secondary_items} className="mt-auto" />
+        <NavSecondary
+          items={[
+            { title: "設定", url: "/settings", icon: IconSettings },
+            { title: "ヘルプ", url: "/help", icon: IconHelp },
+          ]}
+          className="mt-auto"
+        />
       </SidebarContent>
 
       <SidebarFooter>
         <NavUser
-          user={
-            {
-              name: user.name,
-              email: user.email,
-              avatar: user.avatar ?? "/avatars/default.jpg",
-            }
-          }
+          user={{
+            name: me.fullName ?? me.employeeCode ?? "User",
+            email: me.employeeCode ?? "-",
+            avatar: "/avatars/default.jpg",
+          }}
         />
-        {/* grade / 管理者表示を追加したければここに */}
-        {/* 
-        <div className="px-3 pb-2 text-xs text-muted-foreground">
-          grade: {user.grade} {user.isAdmin ? "(管理者)" : ""}
-        </div>
-        */}
       </SidebarFooter>
     </Sidebar>
   )
 }
+

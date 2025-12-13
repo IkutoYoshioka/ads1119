@@ -8,6 +8,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import relationship
 
@@ -21,6 +22,9 @@ class User(Base):
     """
 
     __tablename__ = "users"
+    __table_args__ = (
+        UniqueConstraint("employee_id", name="uq_user_employee_id"),
+    )
 
     # 内部ID（PK）
     id = Column(Integer, primary_key=True, index=True)
@@ -31,7 +35,7 @@ class User(Base):
 
     # 従業員プロファイルへの紐付け（任意）
     # 管理者専用アカウントなどは employee_id = NULL もありうる
-    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=True)
+    employee_id = Column(Integer, ForeignKey("employees.id", ondelete="RESTRICT"), nullable=True)
 
     # 認証関連
     hashed_password = Column(String(255), nullable=False)

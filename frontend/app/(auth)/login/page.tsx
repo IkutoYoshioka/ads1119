@@ -13,7 +13,9 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { login, type LoginResult } from '@/lib/services/auth';
+import { authLogin } from '@/features/auth/api';
+import { LoginResponse } from '@/features/auth/types';
+import { ApiError } from '@/lib/api/errors';
 
 export default function LoginPage(): ReactElement {
   const [employeeCode, setEmployeeCode] = useState<string>('');
@@ -32,14 +34,28 @@ export default function LoginPage(): ReactElement {
     }
 
     try {
-      const result: LoginResult = await login(employeeCode, password);
+      const result: LoginResponse = await authLogin(employeeCode, password)
 
-      // フロントでは等級ロジックは持たず、バックエンドの判断に従う
-      router.push(result.redirectPath);
+      if (result.requiresMfa) {
+        if (!result.temporaryToken) {
+          setError("MFAトークンが取得できませんでした")
+          return
+        }
+        sessionStorage.setItem("mfa_temporary_token", result.temporaryToken)
+        router.push("/mfa/verify")
+        return
+      }
+
+      router.push(result.redirectPath ?? "/dashboard")
     } catch (err: unknown) {
-      console.error('Login error:', err);
-      setError('無効な社員コードまたはパスワードです');
+      console.error("Login error:", err)
+      if (err instanceof ApiError) {
+        setError(err.message)
+        return
+      }
+      setError("無効な社員コードまたはパスワードです")
     }
+
   };
 
   return (

@@ -1,15 +1,16 @@
 # app/api/v1/offices.py
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from app.db.session import get_db
+from app.models.office import Office
+from app.crud.crud_office import list_active
+from app.schemas.office import OfficeOut
 
 router = APIRouter(prefix="/offices", tags=["offices"])
 
-@router.get("")
-def list_offices():
-    """
-    施設一覧の取得。
-    """
-    # TODO: 実装
-    pass
+@router.get("", response_model=list[OfficeOut])
+def get_offices(db: Session = Depends(get_db)):
+    return list_active(db)
 
 
 @router.get("/{officeId}")

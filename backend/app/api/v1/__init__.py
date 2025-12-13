@@ -3,7 +3,7 @@ from fastapi import APIRouter
 
 from . import (
     auth,
-    password_reset,
+    password_reset_requests,
     employees,
     sites,
     offices,
@@ -29,7 +29,7 @@ from . import (
 api_router = APIRouter(prefix="/api/v1")
 
 api_router.include_router(auth.router)
-api_router.include_router(password_reset.router)
+api_router.include_router(password_reset_requests.router)
 api_router.include_router(employees.router)
 api_router.include_router(sites.router)
 api_router.include_router(offices.router)

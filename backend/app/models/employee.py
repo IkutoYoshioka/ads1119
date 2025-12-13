@@ -5,6 +5,7 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Boolean,
 )
 from sqlalchemy.orm import relationship
 
@@ -29,8 +30,12 @@ class Employee(Base):
     first_name = Column(String(100), nullable=False)
     last_name = Column(String(100), nullable=False)
 
-    # 等級（人事評価・ロール判定に使用）
-    grade = Column(String(10), nullable=False)
+    # 等級
+    grade_id = Column(Integer, ForeignKey("grades.id", ondelete="RESTRICT"), nullable=False, index=True)
+
+    # アルバイト・パートは基本人事考課に参加しないが、人によっては参加する
+    participates_in_evaluation = Column(Boolean, nullable=True, default=None)
+
 
     # 所属事業所
     office_id = Column(Integer, ForeignKey("offices.id"), nullable=False)
@@ -48,6 +53,7 @@ class Employee(Base):
 
     # リレーション
     office = relationship("Office", back_populates="employees")
+    grade = relationship("Grade", back_populates="employees")
 
     # 認証アカウント（User）との 1:1 関係
     user = relationship(
